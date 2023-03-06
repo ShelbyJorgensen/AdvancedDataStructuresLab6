@@ -17,26 +17,23 @@ public class Lab6
     	   }
        }
        
-       // Counting Sort Step 1
-       int[] countSort = new int[n];
+       // Counting Sort Step 1: Get occurence count of each number
+       int[] countSort = new int[n + 1];
        for(int i = 0; i < arr.length; i++) {
     	   int length = arr[i].length - 1;
     	   countSort[length] += 1;
        }
        
-       // Counting Sort Step 2
-       for(int i = 0; i < countSort.length - 1; i++) {
-    	   countSort[i + 1] += countSort[i];
-       }
-
-       byte[][] arrSorted = new byte[arr.length][];
-       for(int j = arr.length; j > 0; j--) {
-    	   arrSorted[countSort[j]] = arr[j];
-    	   countSort[arr[j].length] = countSort[arr[j].length] - 1;
+       // Counting Sort Step 2: Find sorted index location based off count
+       for(int i = 1; i < n + 1; i++) {
+    	   countSort[i] += countSort[i - 1];
        }
        
-       for(int i = 0; i < arrSorted.length; i++) {
-    	   System.out.println(arrSorted[i]);
+        // Counting Sort step 3: Update array based on the sorted index
+       byte[][] arrSorted = new byte[arr.length][];
+       for(int j = arr.length - 1; j >= 0; j--) {
+    	   arrSorted[countSort[arr[j].length] - 1] = arr[j];
+    	   countSort[arr[j].length] = countSort[arr[j].length] - 1;
        }
        
        
@@ -46,6 +43,7 @@ public class Lab6
     }
 
     // ---------------------------------------------------------------------
+    // All code below was provided as part of the class assignment
     // Do not change any of the code below!
 
     private static final int LabNo = 6;
