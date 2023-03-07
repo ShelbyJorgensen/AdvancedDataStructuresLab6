@@ -38,7 +38,44 @@ public class Lab6
        
        
        // Radix Sort
-       
+       //Radix Sort
+       byte[][] radixSorted = arrSorted.clone();
+       int count = 0;
+       for(int i = 0; i < radixSorted.length; i++) {
+    	   
+    	   int[] radixCounts = new int[128];
+    	   System.out.println("i: " + i);
+    	   for(int j = 0; j < radixSorted.length; j++) {
+    		   if(radixSorted[i].length == radixSorted[j].length) {
+    			   count++;
+    		   }
+    	   }
+    	   
+    	   System.out.println("i: " + i + ", count: " + count);
+    	   for(int j = 0; j < radixSorted[i].length; j++) {
+    		   for(int k = i; k < count; k++) {
+    			   radixCounts[radixSorted[k][j]] += 1;
+    		   }
+    		   
+    		   System.out.println("TEST1");
+        	   for(int k = 1; k < radixCounts.length; k++) {
+        		   radixCounts[k] += radixCounts[k - 1];
+        	   }
+        	   
+        	   if(i == 0) {
+        		   for(int k = 0; k < radixCounts.length; k++) {
+        			   if(radixCounts[k] > 0) {
+        				   System.out.println(k + ", " + radixCounts[k]);
+        			   }
+        		   }
+        	   }
+        	   Arrays.fill(radixCounts, 0);
+    	   }
+    	   
+
+    	   i = count - 1;
+       }
+    }
        
     }
 
