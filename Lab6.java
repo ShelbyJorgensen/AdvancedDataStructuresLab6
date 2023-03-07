@@ -9,74 +9,81 @@ public class Lab6
      *  (Technically, it is O(n * b) time. However, since our base b = 128 is constant, it is O(n).)
      */
     private static void problem(byte[][] arr) {   
-       // Find the value of n, of the largest array inside arr
-       int n = 0;
-       for(int i = 0; i < arr.length; i++) {
-    	   if(arr[i].length > n) {
-    		   n = arr[i].length;
-    	   }
-       }
-       
-       // Counting Sort Step 1: Get occurence count of each number
-       int[] countSort = new int[n + 1];
-       for(int i = 0; i < arr.length; i++) {
-    	   int length = arr[i].length - 1;
-    	   countSort[length] += 1;
-       }
-       
-       // Counting Sort Step 2: Find sorted index location based off count
-       for(int i = 1; i < n + 1; i++) {
-    	   countSort[i] += countSort[i - 1];
-       }
-       
+    	// Find the value of n, of the largest array inside arr
+        int n = 0;
+        for(int i = 0; i < arr.length; i++) {
+     	   if(arr[i].length > n) {
+     		   n = arr[i].length;
+     	   }
+        }
+        
+        // Counting Sort Step 1: Get occurence count of each number
+        int[] countSort = new int[n + 1];
+        for(int i = 0; i < arr.length; i++) {
+     	   int length = arr[i].length;
+     	   countSort[length] += 1;
+        }
+        
+        // Counting Sort Step 2: Find sorted index location based off count
+        for(int i = 1; i < n + 1; i++) {
+     	   countSort[i] += countSort[i - 1];
+        }
+        
         // Counting Sort step 3: Update array based on the sorted index
-       byte[][] arrSorted = new byte[arr.length][];
-       for(int j = arr.length - 1; j >= 0; j--) {
-    	   arrSorted[countSort[arr[j].length] - 1] = arr[j];
-    	   countSort[arr[j].length] = countSort[arr[j].length] - 1;
-       }
-       
-       
-       // Radix Sort
-       //Radix Sort
-       byte[][] radixSorted = arrSorted.clone();
-       int count = 0;
-       for(int i = 0; i < radixSorted.length; i++) {
-    	   
-    	   int[] radixCounts = new int[128];
-    	   System.out.println("i: " + i);
-    	   for(int j = 0; j < radixSorted.length; j++) {
-    		   if(radixSorted[i].length == radixSorted[j].length) {
-    			   count++;
-    		   }
-    	   }
-    	   
-    	   System.out.println("i: " + i + ", count: " + count);
-    	   for(int j = 0; j < radixSorted[i].length; j++) {
-    		   for(int k = i; k < count; k++) {
-    			   radixCounts[radixSorted[k][j]] += 1;
-    		   }
-    		   
-    		   System.out.println("TEST1");
-        	   for(int k = 1; k < radixCounts.length; k++) {
-        		   radixCounts[k] += radixCounts[k - 1];
-        	   }
-        	   
-        	   if(i == 0) {
-        		   for(int k = 0; k < radixCounts.length; k++) {
-        			   if(radixCounts[k] > 0) {
-        				   System.out.println(k + ", " + radixCounts[k]);
-        			   }
-        		   }
-        	   }
-        	   Arrays.fill(radixCounts, 0);
-    	   }
-    	   
+        byte[][] arrSorted = new byte[arr.length][];
+        for(int j = arr.length - 1; j >= 0; j--) {
+     	   arrSorted[countSort[arr[j].length] - 1] = arr[j];
+     	   countSort[arr[j].length] = countSort[arr[j].length] - 1;
+        }
+        
+        //Radix Sort
+        byte[][] radixSorted = new byte[arr.length][];
+        int count = 0;
+        for(int i = 0; i < radixSorted.length; i++) {
+     	   
+     	   
+     	   // Get the count of arrays that have the same size as the current array
+     	   for(int j = 0; j < arrSorted.length; j++) {
+     		   if(arrSorted[i].length == arrSorted[j].length) {
+     			   count++;
+     		   }
+     	   }
+     	   
+     	   // Go through each element in this column of the array
+     	   for(int j = 0; j < arrSorted[i].length; j++) {
+     		  int[] radixCounts = new int[128];
+     		   
+     		   // Get the count of the numbers in the current groups column
+     		   for(int k = i; k < count; k++) {
+     			   radixCounts[arrSorted[k][j]] += 1;
+     		   }
+     		   
+     		   // Update the counts to the index locations they should be placed at
+         	   for(int k = 1; k < radixCounts.length; k++) {
+         		   radixCounts[k] += radixCounts[k - 1];
+         	   }
+         	   
+         	   // Place the value into the correct position based on the count array
+         	   for(int k = count - 1; k >= i; k--) {
+         		   radixSorted[radixCounts[arrSorted[k][j]] - 1 + i] = arrSorted[k];
+         		   radixCounts[arrSorted[k][j]]--;
+         	   }
+         	   
+         	   // Update the position of my counting sort array based off the results of radix sorting
+         	   for(int k = count - 1; k >= i; k--){
+         		   arrSorted[k] = radixSorted[k];
+         	   }
+     	   }
+     	   
+     	   // Update i to start at the start of the next group of arrays
+     	   i = count - 1;
+        }
+        
+        // Copy the value from radix sorted array into passed array
+        for(int i = 0; i < arr.length; i++) {
+     	   arr[i] = radixSorted[i];
+        }
 
-    	   i = count - 1;
-       }
-    }
-       
     }
 
     // ---------------------------------------------------------------------
